@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regnify — Licensed Representative Lifecycle Management Platform</title>
+  <meta name="description" content="Regnify is Singapore's AI-powered RegTech platform for end-to-end Licensed Representative lifecycle management — from onboarding and CMFAS tracking to CPD compliance and cessation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =============================================
+       CSS CUSTOM PROPERTIES — BRAND PALETTE
+    ============================================= */
+    :root {
+      --charcoal:    #1A1917;
+      --warm-dark:   #2E2B25;
+      --gold:        #C8A84B;
+      --light-gold:  #E8D99A;
+      --ivory:       #F0E8D8;
+      --cream:       #F5F1EA;
+      --mid-warm:    #9A8E7E;
+      --deep-warm:   #4A4740;
+
+      --font:        'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --transition:  0.3s ease;
+      --radius:      12px;
+      --radius-sm:   8px;
+      --shadow:      0 4px 24px rgba(0,0,0,0.10);
+      --shadow-lg:   0 8px 48px rgba(0,0,0,0.18);
+    }
+
+    /* =============================================
+       RESET & BASE
+    ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: var(--font); background: var(--cream); color: var(--charcoal); line-height: 1.6; overflow-x: hidden; }
+    img  { display: block; max-width: 100%; }
+    a    { text-decoration: none; color: inherit; }
+
+    /* =============================================
+       UTILITY
+    ============================================= */
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fade-in.visible          { opacity: 1; transform: translateY(0); }
+    .fade-in-delay-1          { transition-delay: 0.1s; }
+    .fade-in-delay-2          { transition-delay: 0.2s; }
+    .fade-in-delay-3          { transition-delay: 0.3s; }
+    .fade-in-delay-4          { transition-delay: 0.4s; }
+    #hero .fade-in            { opacity: 1; transform: none; } /* above-fold: show immediately */
+
+    /* =============================================
+       NAVIGATION
+    ============================================= */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 20px 0;
+      transition: background var(--transition), padding var(--transition), box-shadow var(--transition);
+    }
+    #navbar.scrolled {
+      background: var(--charcoal);
+      padding: 12px 0;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+    .nav-links  { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: 0.875rem; font-weight: 500;
+      color: var(--ivory); opacity: 0.85;
+      transition: opacity var(--transition), color var(--transition);
+    }
+    .nav-links a:hover { opacity: 1; color: var(--light-gold); }
+    .nav-cta {
+      background: var(--gold) !important; color: var(--charcoal) !important;
+      opacity: 1 !important; padding: 10px 22px; border-radius: var(--radius-sm);
+      font-weight: 700 !important;
+      transition: background var(--transition), transform var(--transition) !important;
+    }
+    .nav-cta:hover { background: var(--light-gold) !important; transform: translateY(-1px); }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--ivory); border-radius: 2px; transition: transform var(--transition), opacity var(--transition); }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; background: var(--charcoal);
+      z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 1.5rem; font-weight: 600; color: var(--ivory); transition: color var(--transition); }
+    .mobile-menu a:hover { color: var(--gold); }
+
+    /* =============================================
+       HERO
+    ============================================= */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80&auto=format&fit=crop');
+      background-size: cover; background-position: center;
+      filter: brightness(0.15);
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(26,25,23,0.97) 0%, rgba(46,43,37,0.88) 55%, rgba(26,25,23,0.94) 100%);
+    }
+    #hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; background: linear-gradient(90deg, transparent, var(--gold), transparent); z-index: 2;
+    }
+    .hero-content { position: relative; z-index: 3; max-width: 800px; padding: 140px 0 100px; }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(200,168,75,0.1); border: 1px solid rgba(200,168,75,0.28);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 0.75rem; font-weight: 500; color: var(--light-gold); letter-spacing: 0.06em;
+      margin-bottom: 28px;
+    }
+    .hero-tag::before { content: ''; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+
+    .hero-headline {
+      font-size: clamp(2.8rem, 5.5vw, 5rem); font-weight: 700;
+      color: var(--ivory); line-height: 1.08; margin-bottom: 28px; letter-spacing: -0.03em;
+    }
+    .hero-headline em { font-style: normal; color: var(--gold); }
+
+    .hero-sub {
+      font-size: 1.1rem; color: var(--mid-warm); line-height: 1.8;
+      max-width: 640px; margin-bottom: 44px;
+    }
+
+    .hero-cta-group { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 60px; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--gold); color: var(--charcoal);
+      font-family: var(--font); font-size: 0.95rem; font-weight: 700;
+      padding: 16px 32px; border-radius: var(--radius-sm); border: none; cursor: pointer;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-primary:hover { background: var(--light-gold); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,168,75,0.35); }
+
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 12px; }
+    .badge {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(240,232,216,0.06); border: 1px solid rgba(240,232,216,0.14);
+      border-radius: 100px; padding: 8px 18px;
+      font-size: 0.78rem; font-weight: 500; color: var(--ivory); letter-spacing: 0.03em;
+    }
+    .badge-dot { width: 7px; height: 7px; background: var(--gold); border-radius: 50%; flex-shrink: 0; }
+
+    .scroll-indicator { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .scroll-indicator span { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid-warm); }
+    .scroll-mouse { width: 22px; height: 36px; border: 2px solid rgba(154,142,126,0.45); border-radius: 11px; display: flex; justify-content: center; padding-top: 6px; }
+    .scroll-mouse::before { content: ''; width: 3px; height: 8px; background: var(--gold); border-radius: 2px; animation: scrollBob 1.8s ease-in-out infinite; }
+    @keyframes scrollBob { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(6px); opacity: 0.4; } }
+
+    /* =============================================
+       PROBLEM SECTION
+    ============================================= */
+    #problem { padding: 90px 0; background: #fff; }
+    .section-header { text-align: center; margin-bottom: 56px; }
+    .section-title { font-size: clamp(1.75rem, 3vw, 2.4rem); font-weight: 700; color: var(--charcoal); letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2; }
+    .section-subtitle { font-size: 1rem; color: var(--deep-warm); max-width: 560px; margin: 0 auto; line-height: 1.75; }
+
+    .problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+    .problem-card {
+      background: var(--cream); border-radius: var(--radius);
+      padding: 32px 28px; border: 1px solid rgba(154,142,126,0.15);
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .problem-icon { font-size: 1.75rem; line-height: 1; }
+    .problem-title { font-size: 1rem; font-weight: 700; color: var(--charcoal); }
+    .problem-text { font-size: 0.875rem; color: var(--deep-warm); line-height: 1.65; }
+
+    /* =============================================
+       LIFECYCLE SECTION
+    ============================================= */
+    #lifecycle { padding: 90px 0; background: var(--charcoal); }
+    .lifecycle-header { text-align: center; margin-bottom: 60px; }
+    .lifecycle-header .section-title { color: var(--ivory); }
+    .lifecycle-header .section-subtitle { color: var(--mid-warm); }
+
+    .lifecycle-stages {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+      border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(200,168,75,0.2);
+    }
+    .stage {
+      padding: 36px 28px; background: rgba(255,255,255,0.03);
+      border-right: 1px solid rgba(200,168,75,0.15);
+      transition: background var(--transition);
+    }
+    .stage:last-child { border-right: none; }
+    .stage:hover { background: rgba(200,168,75,0.07); }
+
+    .stage-label {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 10px;
+    }
+    .stage-title { font-size: 1rem; font-weight: 700; color: var(--ivory); margin-bottom: 18px; }
+    .stage-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .stage-list li { font-size: 0.82rem; color: var(--mid-warm); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+    .stage-list li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 6px; }
+
+    /* =============================================
+       WHY CHOOSE US
+    ============================================= */
+    #why { padding: 90px 0; background: var(--cream); }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+    .card {
+      background: #fff; border-radius: var(--radius); padding: 36px 30px;
+      border: 1px solid rgba(154,142,126,0.12); position: relative; overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--light-gold)); opacity: 0; transition: opacity var(--transition); }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: rgba(200,168,75,0.2); }
+    .card:hover::before { opacity: 1; }
+    .card-icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--charcoal), var(--warm-dark)); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .card-title { font-size: 1.05rem; font-weight: 700; color: var(--charcoal); margin-bottom: 10px; letter-spacing: -0.01em; }
+    .card-text { font-size: 0.875rem; color: var(--deep-warm); line-height: 1.7; }
+
+    /* =============================================
+       AI SECTION
+    ============================================= */
+    #ai { padding: 90px 0; background: #fff; }
+    .ai-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+    .ai-intro { }
+    .ai-intro .section-label { margin-bottom: 14px; }
+    .ai-title { font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 700; color: var(--charcoal); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 18px; }
+    .ai-desc { font-size: 0.95rem; color: var(--deep-warm); line-height: 1.8; margin-bottom: 32px; }
+
+    .governance-list { display: flex; flex-direction: column; gap: 18px; }
+    .governance-item { display: flex; gap: 14px; }
+    .gov-icon { width: 36px; height: 36px; flex-shrink: 0; background: rgba(200,168,75,0.1); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
+    .gov-icon svg { color: var(--gold); }
+    .gov-text strong { display: block; font-size: 0.9rem; font-weight: 600; color: var(--charcoal); margin-bottom: 3px; }
+    .gov-text span { font-size: 0.82rem; color: var(--deep-warm); line-height: 1.55; }
+
+    .ai-capabilities { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .ai-cap {
+      background: var(--cream); border-radius: var(--radius-sm); padding: 18px 16px;
+      border: 1px solid rgba(154,142,126,0.15);
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .ai-cap:hover { border-color: rgba(200,168,75,0.3); background: rgba(200,168,75,0.04); }
+    .ai-cap-num { font-size: 0.65rem; font-weight: 700; color: var(--gold); letter-spacing: 0.08em; margin-bottom: 6px; }
+    .ai-cap-title { font-size: 0.875rem; font-weight: 700; color: var(--charcoal); margin-bottom: 4px; }
+    .ai-cap-sub { font-size: 0.78rem; color: var(--mid-warm); line-height: 1.4; }
+
+    /* =============================================
+       ECOSYSTEM / STATS STRIP
+    ============================================= */
+    #ecosystem { background: var(--warm-dark); padding: 64px 0; }
+    .eco-title { text-align: center; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid-warm); margin-bottom: 36px; }
+    .eco-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+    .eco-item {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(200,168,75,0.12);
+      border-radius: var(--radius-sm); padding: 20px 16px; text-align: center;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .eco-item:hover { border-color: rgba(200,168,75,0.3); background: rgba(200,168,75,0.06); }
+    .eco-item-name { font-size: 0.82rem; font-weight: 600; color: var(--ivory); margin-bottom: 4px; }
+    .eco-item-type { font-size: 0.7rem; color: var(--mid-warm); }
+
+    /* =============================================
+       FAQ
+    ============================================= */
+    #faq { padding: 90px 0; background: var(--cream); }
+    .faq-list { max-width: 780px; margin: 0 auto; }
+    .faq-item { border-radius: var(--radius-sm); border: 1px solid rgba(154,142,126,0.15); margin-bottom: 8px; overflow: hidden; }
+    .faq-question {
+      width: 100%; background: none; border: none; padding: 22px 28px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      cursor: pointer; text-align: left; font-family: var(--font);
+      font-size: 1rem; font-weight: 600; color: var(--charcoal);
+      transition: background var(--transition);
+    }
+    .faq-question:hover { background: rgba(200,168,75,0.05); }
+    .faq-question[aria-expanded="true"] { background: rgba(200,168,75,0.05); }
+    .faq-chevron { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--charcoal); display: flex; align-items: center; justify-content: center; transition: transform var(--transition), background var(--transition); }
+    .faq-question[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); background: var(--gold); }
+    .faq-chevron svg { color: var(--ivory); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .faq-answer.open { max-height: 400px; }
+    .faq-answer-inner { padding: 0 28px 24px; font-size: 0.925rem; color: var(--deep-warm); line-height: 1.75; }
+
+    /* =============================================
+       CONTACT FORM
+    ============================================= */
+    #contact { padding: 90px 0; background: var(--charcoal); position: relative; overflow: hidden; }
+    #contact::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(200,168,75,0.07) 0%, transparent 70%); pointer-events: none; }
+
+    .contact-inner { display: grid; grid-template-columns: 1fr 1.5fr; gap: 80px; align-items: start; }
+    .contact-title { font-size: clamp(1.75rem, 3vw, 2.4rem); font-weight: 700; color: var(--ivory); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 20px; }
+    .contact-desc { font-size: 0.9rem; color: var(--mid-warm); line-height: 1.8; margin-bottom: 40px; }
+    .contact-point { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+    .contact-point-icon { width: 38px; height: 38px; flex-shrink: 0; background: rgba(200,168,75,0.1); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
+    .contact-point-icon svg { color: var(--gold); }
+    .contact-point-text { font-size: 0.875rem; color: var(--mid-warm); padding-top: 9px; }
+    .contact-point-text strong { display: block; color: var(--ivory); font-weight: 600; margin-bottom: 2px; }
+
+    .form-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(240,232,216,0.08); border-radius: var(--radius); padding: 44px 40px; }
+    .form-title { font-size: 1.2rem; font-weight: 700; color: var(--ivory); margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(240,232,216,0.08); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 0.73rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--mid-warm); margin-bottom: 7px; }
+    .req { color: var(--gold); margin-left: 2px; }
+    .form-input, .form-textarea {
+      width: 100%; background: rgba(240,232,216,0.05); border: 1px solid rgba(240,232,216,0.12);
+      border-radius: var(--radius-sm); padding: 12px 15px;
+      font-family: var(--font); font-size: 0.9rem; color: var(--ivory); outline: none;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(154,142,126,0.55); }
+    .form-input:focus, .form-textarea:focus { border-color: var(--gold); background: rgba(200,168,75,0.05); }
+    .form-input.error, .form-textarea.error { border-color: #e05c5c; }
+    .form-textarea { resize: vertical; min-height: 110px; }
+    .field-error { font-size: 0.73rem; color: #e07070; margin-top: 5px; display: none; }
+    .field-error.show { display: block; }
+
+    .btn-submit {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--gold); color: var(--charcoal); font-family: var(--font);
+      font-size: 1rem; font-weight: 700; padding: 16px 32px; border-radius: var(--radius-sm);
+      border: none; cursor: pointer; margin-top: 8px;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-submit:hover { background: var(--light-gold); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,168,75,0.4); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .form-notice { text-align: center; margin-top: 12px; font-size: 0.73rem; color: rgba(154,142,126,0.65); }
+
+    .form-message { display: none; border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 22px; font-size: 0.875rem; font-weight: 500; }
+    .form-message.success { display: flex; align-items: center; gap: 10px; background: rgba(72,199,142,0.1); border: 1px solid rgba(72,199,142,0.28); color: #7de3b4; }
+    .form-message.error-msg { display: flex; align-items: center; gap: 10px; background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.28); color: #e07070; }
+
+    /* =============================================
+       FOOTER
+    ============================================= */
+    #footer { background: var(--warm-dark); padding: 60px 0 0; border-top: 1px solid rgba(200,168,75,0.2); }
+    .footer-grid { display: grid; grid-template-columns: 1.8fr 1fr 1fr; gap: 48px; padding-bottom: 48px; }
+    .footer-desc { font-size: 0.875rem; color: var(--mid-warm); line-height: 1.75; max-width: 300px; margin: 20px 0 24px; }
+    .social-links { display: flex; gap: 10px; }
+    .social-link { width: 36px; height: 36px; border-radius: var(--radius-sm); background: rgba(240,232,216,0.06); border: 1px solid rgba(240,232,216,0.1); display: flex; align-items: center; justify-content: center; color: var(--mid-warm); transition: background var(--transition), color var(--transition), border-color var(--transition); }
+    .social-link:hover { background: rgba(200,168,75,0.14); color: var(--gold); border-color: rgba(200,168,75,0.3); }
+    .footer-col-title { font-size: 0.73rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ivory); margin-bottom: 18px; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 11px; }
+    .footer-links a { font-size: 0.875rem; color: var(--mid-warm); transition: color var(--transition); }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 13px; }
+    .footer-contact-item svg { color: var(--gold); flex-shrink: 0; }
+    .footer-contact-item a, .footer-contact-item span { font-size: 0.875rem; color: var(--mid-warm); transition: color var(--transition); }
+    .footer-contact-item a:hover { color: var(--gold); }
+    .footer-bottom { border-top: 1px solid rgba(154,142,126,0.1); padding: 20px 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .footer-copyright { font-size: 0.78rem; color: rgba(154,142,126,0.6); }
+    .footer-disclaimer { font-size: 0.72rem; color: rgba(154,142,126,0.45); max-width: 700px; line-height: 1.6; }
+
+    /* =============================================
+       RESPONSIVE
+    ============================================= */
+    @media (max-width: 1024px) {
+      .ai-inner { grid-template-columns: 1fr; gap: 48px; }
+      .contact-inner { grid-template-columns: 1fr; gap: 44px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1 / -1; }
+      .lifecycle-stages { grid-template-columns: 1fr 1fr; }
+      .stage { border-right: 1px solid rgba(200,168,75,0.15); border-bottom: 1px solid rgba(200,168,75,0.15); }
+      .stage:nth-child(2n) { border-right: none; }
+      .stage:nth-child(3), .stage:nth-child(4) { border-bottom: none; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero-content { padding: 120px 0 80px; }
+      .hero-sub { font-size: 1rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-card { padding: 30px 22px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; }
+      .ai-capabilities { grid-template-columns: 1fr; }
+      .eco-grid { grid-template-columns: 1fr 1fr; }
+      .lifecycle-stages { grid-template-columns: 1fr; }
+      .stage { border-right: none; border-bottom: 1px solid rgba(200,168,75,0.15); }
+      .stage:last-child { border-bottom: none; }
+    }
+    @media (max-width: 480px) {
+      .hero-badges { flex-direction: column; align-items: flex-start; }
+      .hero-cta-group { flex-direction: column; }
+      .btn-primary { justify-content: center; }
+      .eco-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Navigation menu">
+    <a href="#problem" onclick="closeMobileMenu()">The Problem</a>
+    <a href="#why" onclick="closeMobileMenu()">Why Regnify</a>
+    <a href="#ai" onclick="closeMobileMenu()">AI Platform</a>
+    <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
+    <a href="#contact" onclick="closeMobileMenu()" style="color:var(--gold);">Schedule a Consultation</a>
+  </div>
+
+  <!-- =============================================
+       NAVIGATION
+  ============================================= -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#" class="nav-logo" aria-label="Regnify home">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="150" height="45" aria-hidden="true">
+            <text x="200" y="68" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="72" font-weight="700" letter-spacing="-3" fill="#F0E8D8">Regnify</text>
+            <rect x="30" y="84" width="326" height="5" rx="2.5" fill="#C8A84B"/>
+            <circle cx="366" cy="86.5" r="3.5" fill="#C8A84B"/>
+            <circle cx="378" cy="86.5" r="2" fill="#C8A84B" opacity="0.5"/>
+          </svg>
+        </a>
+        <ul class="nav-links" role="list">
+          <li><a href="#problem">The Problem</a></li>
+          <li><a href="#why">Why Regnify</a></li>
+          <li><a href="#ai">AI Platform</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact" class="nav-cta">Schedule a Consultation</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =============================================
+       SECTION 1: HERO
+  ============================================= -->
+  <section id="hero" aria-labelledby="hero-heading">
+    <div class="hero-bg" role="img" aria-label="Modern financial district skyline"></div>
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-tag">
+          Singapore's RegTech Platform for MAS-Regulated Institutions
+        </div>
+        <h1 class="hero-headline" id="hero-heading">
+          Focus on work<br>that <em>matters.</em>
+        </h1>
+        <p class="hero-sub">
+          Your compliance team is too valuable to spend their days chasing paperwork, tracking CMFAS modules, and managing vendors in silos. Regnify digitises the entire Licensed Representative lifecycle — from Form 3 onboarding to cessation — so your people can do what they were hired to do.
+        </p>
+        <div class="hero-cta-group">
+          <a href="#contact" class="btn-primary">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Schedule a Free Consultation
+          </a>
+        </div>
+        <div class="hero-badges">
+          <div class="badge"><div class="badge-dot"></div>Trusted Digital Platform</div>
+          <div class="badge"><div class="badge-dot"></div>AI-Powered, Human-Governed</div>
+          <div class="badge"><div class="badge-dot"></div>Optimising Productivity and Accuracy</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator" aria-hidden="true">
+      <div class="scroll-mouse"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- =============================================
+       THE PROBLEM
+  ============================================= -->
+  <section id="problem" aria-labelledby="problem-heading">
+    <div class="container" style="padding-top:90px;padding-bottom:90px;">
+      <div class="section-header">
+        <span class="section-label fade-in">The Challenge</span>
+        <h2 class="section-title fade-in fade-in-delay-1" id="problem-heading">The compliance burden is real.<br>And it's been accepted for too long.</h2>
+        <p class="section-subtitle fade-in fade-in-delay-2">Most financial institutions are managing Licensed Representative compliance the same way they did a decade ago — on spreadsheets, in email threads, across disconnected vendor portals. The cost is high. The risk is real. It doesn't have to be this way.</p>
+      </div>
+      <div class="problem-grid">
+        <div class="problem-card fade-in">
+          <div class="problem-icon" aria-hidden="true">💸</div>
+          <div class="problem-title">High Cost of Compliance</div>
+          <p class="problem-text">Your compliance team's time is expensive. Every hour spent manually filling Form 3s, chasing background check results, or reconciling CPD records is an hour not spent on work that moves the business forward. The cost compounds quietly — and the mistakes add regulatory risk on top.</p>
+        </div>
+        <div class="problem-card fade-in fade-in-delay-1">
+          <div class="problem-icon" aria-hidden="true">🔗</div>
+          <div class="problem-title">No Centralised Vendor Hub</div>
+          <p class="problem-text">Background screening goes to one portal. L&D to another. CMFAS tracking somewhere else. AML/CFT checks to yet another system. No unified view. No automated SLA monitoring. No way to know where things stand without picking up the phone.</p>
+        </div>
+        <div class="problem-card fade-in fade-in-delay-2">
+          <div class="problem-icon" aria-hidden="true">⚙️</div>
+          <div class="problem-title">Lack of Automated Processes</div>
+          <p class="problem-text">Form 3 workflows. CPD tracking. Recertification cycles. Fit &amp; Proper renewals. Each one a manual process, each one a source of delays, errors, and audit exposure. The representative lifecycle never stops — but the automation still hasn't started.</p>
+        </div>
+        <div class="problem-card fade-in fade-in-delay-3">
+          <div class="problem-icon" aria-hidden="true">🤖</div>
+          <div class="problem-title">No AI-Driven Innovation</div>
+          <p class="problem-text">When MAS issues a new notice, does your team find out immediately — or days later? Can your system tell you which representatives have CMFAS gaps before MAS asks? AI can surface these answers in seconds. Most firms are still doing it by hand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       LIFECYCLE STAGES
+  ============================================= -->
+  <section id="lifecycle" aria-labelledby="lifecycle-heading">
+    <div class="container">
+      <div class="lifecycle-header">
+        <span class="section-label fade-in" style="color:var(--light-gold);">The Platform</span>
+        <h2 class="section-title fade-in fade-in-delay-1" id="lifecycle-heading" style="color:var(--ivory);">One platform.<br>Every stage of the representative lifecycle.</h2>
+        <p class="section-subtitle fade-in fade-in-delay-2" style="color:var(--mid-warm);">From the moment a representative joins your firm to the day they leave — and everything in between — Regnify handles it. Every form, every check, every approval, every record. Digitised, automated, and always audit-ready.</p>
+      </div>
+      <div class="lifecycle-stages fade-in fade-in-delay-2">
+
+        <div class="stage">
+          <div class="stage-label">Stage 1</div>
+          <div class="stage-title">Pre-Onboarding</div>
+          <ul class="stage-list" aria-label="Pre-onboarding features">
+            <li>Digital onboarding workflows — forms, Fit &amp; Proper, and CMFAS mapping by role</li>
+            <li>Integrated background and reference checks with automated status tracking</li>
+            <li>RNF submission-ready data with a full, timestamped approval trail</li>
+          </ul>
+        </div>
+
+        <div class="stage">
+          <div class="stage-label">Stage 2</div>
+          <div class="stage-title">Post-Onboarding</div>
+          <ul class="stage-list" aria-label="Post-onboarding features">
+            <li>Ongoing supervision — regulated activities, particulars updates, and attestations</li>
+            <li>CPD tracking, recertification cycles, and compliance monitoring</li>
+            <li>Breach and incident logging with escalation workflows</li>
+          </ul>
+        </div>
+
+        <div class="stage">
+          <div class="stage-label">Stage 3</div>
+          <div class="stage-title">Cessation / Exit</div>
+          <ul class="stage-list" aria-label="Cessation features">
+            <li>Streamlined change and cessation workflows with MAS notification handling</li>
+            <li>Representative exit documentation, cleanly closed and audit-logged</li>
+          </ul>
+        </div>
+
+        <div class="stage">
+          <div class="stage-label">Rep Record</div>
+          <div class="stage-title">Rep Passport</div>
+          <ul class="stage-list" aria-label="Rep passport features">
+            <li>A portable, auditable career record — qualifications, CPD history, and employment</li>
+            <li>Downloadable profile that travels with the representative to future employers</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       WHY CHOOSE US
+  ============================================= -->
+  <section id="why" aria-labelledby="why-heading">
+    <div class="container" style="padding-top:90px;padding-bottom:90px;">
+      <div class="section-header">
+        <span class="section-label fade-in">Why Regnify</span>
+        <h2 class="section-title fade-in fade-in-delay-1" id="why-heading">Built by practitioners,<br>for practitioners.</h2>
+        <p class="section-subtitle fade-in fade-in-delay-2">We didn't design Regnify from the outside looking in. We came from inside financial institutions — from compliance, supervision, and regulatory functions. We built the platform we always wished existed.</p>
+      </div>
+      <div class="cards-grid">
+        <article class="card fade-in">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8A84B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>
+          </div>
+          <h3 class="card-title">End-to-End Digital Platform</h3>
+          <p class="card-text">Every compliance obligation for your Licensed Representatives lives in one place. Pre-onboarding, CMFAS tracking, CPD, breach logging, recertification, cessation. No more spreadsheets. No more chasing. No more gaps in your audit trail when MAS comes calling.</p>
+        </article>
+        <article class="card fade-in fade-in-delay-1">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8A84B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="card-title">Trusted &amp; Secure</h3>
+          <p class="card-text">Built for the data sensitivity of financial services. PII is protected and redacted before any external transmission. Every action is timestamped and attributed to an approver — giving you a complete, inspection-ready audit trail at all times, not just when you need it.</p>
+        </article>
+        <article class="card fade-in fade-in-delay-2">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8A84B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </div>
+          <h3 class="card-title">We Are Practitioners Ourselves</h3>
+          <p class="card-text">We've sat in your seat. Our team comes from compliance, supervision, and regulatory functions inside MAS-regulated institutions. We understand the RNF process, the inspection cycle, the pressure of managing a large representative population — and we built Regnify around that reality.</p>
+        </article>
+        <article class="card fade-in fade-in-delay-3">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8A84B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h3 class="card-title">Boost Team Productivity by 60%</h3>
+          <p class="card-text">Form 3 workflows auto-filled from documents. Background check status tracked automatically. CMFAS gaps surfaced before they become issues. CPD records updated in real time. Every manual step you eliminate is an error you prevent — and an hour your team gets back.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       AI PLATFORM
+  ============================================= -->
+  <section id="ai" aria-labelledby="ai-heading">
+    <div class="container" style="padding-top:90px;padding-bottom:90px;">
+      <div class="ai-inner">
+
+        <!-- Left: governance -->
+        <div class="ai-intro fade-in">
+          <span class="section-label">AI Platform</span>
+          <h2 class="ai-title" id="ai-heading">AI-powered.<br>Human-governed.<br>MAS-citation grounded.</h2>
+          <p class="ai-desc">Regnify's AI works the way a compliance professional expects AI to work. Not a black box, not a chatbot that guesses. Every recommendation cites the specific MAS regulation it draws from. Every action is logged. And no AI output becomes a compliance decision without a qualified human approving it first.</p>
+
+          <div class="governance-list">
+            <div class="governance-item">
+              <div class="gov-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="gov-text">
+                <strong>Human-in-the-loop for every compliance decision</strong>
+                <span>AI surfaces insights and flags risks. Your qualified team makes every final call — always.</span>
+              </div>
+            </div>
+            <div class="governance-item">
+              <div class="gov-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="gov-text">
+                <strong>Regulatory advice you can stand behind</strong>
+                <span>Every response cites the precise MAS document and section — so you know exactly where it comes from.</span>
+              </div>
+            </div>
+            <div class="governance-item">
+              <div class="gov-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </div>
+              <div class="gov-text">
+                <strong>Complete, inspection-ready audit trail</strong>
+                <span>Every AI action — input, output, model version — is logged. If MAS asks, you can show them everything.</span>
+              </div>
+            </div>
+            <div class="governance-item">
+              <div class="gov-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="gov-text">
+                <strong>Privacy built in, not bolted on</strong>
+                <span>PII is automatically redacted before it ever reaches an external AI provider. Your data stays yours.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: AI capability pillars -->
+        <div class="fade-in fade-in-delay-2">
+          <p style="font-size:0.7rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;">What Our AI Does For You</p>
+          <div class="ai-capabilities" style="grid-template-columns:1fr;">
+            <div class="ai-cap">
+              <div class="ai-cap-num">01</div>
+              <div class="ai-cap-title">Intelligent Automation</div>
+              <div class="ai-cap-sub">Takes the manual effort out of repetitive compliance tasks — from document processing and form completion to pre-approval checks and SLA monitoring — so your team focuses on judgement, not administration.</div>
+            </div>
+            <div class="ai-cap">
+              <div class="ai-cap-num">02</div>
+              <div class="ai-cap-title">Regulatory Intelligence</div>
+              <div class="ai-cap-sub">Keeps your firm ahead of the regulatory curve. Surfaces MAS guidance, detects regulatory changes as they happen, and delivers advice grounded in specific MAS documents and sections — not generic answers.</div>
+            </div>
+            <div class="ai-cap">
+              <div class="ai-cap-num">03</div>
+              <div class="ai-cap-title">Proactive Risk &amp; Gap Detection</div>
+              <div class="ai-cap-sub">Identifies compliance gaps, certification shortfalls, and process bottlenecks before they become issues — giving your team the visibility to act early, rather than respond late.</div>
+            </div>
+            <div class="ai-cap">
+              <div class="ai-cap-num">04</div>
+              <div class="ai-cap-title">Continuous Learning Support</div>
+              <div class="ai-cap-sub">Tracks CPD obligations across your entire representative population and provides personalised development recommendations — ensuring your representatives stay qualified and your firm stays compliant.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       ECOSYSTEM / PARTNERS
+  ============================================= -->
+  <section id="ecosystem" aria-label="Platform ecosystem and partners">
+    <div class="container">
+      <div class="eco-title fade-in">Everything your compliance operation needs — connected in one ecosystem</div>
+      <div class="eco-grid">
+        <div class="eco-item fade-in">
+          <div class="eco-item-name">Background Screen Partners</div>
+          <div class="eco-item-type">Due Diligence</div>
+        </div>
+        <div class="eco-item fade-in fade-in-delay-1">
+          <div class="eco-item-name">L&amp;D Partners</div>
+          <div class="eco-item-type">Learning &amp; Development</div>
+        </div>
+        <div class="eco-item fade-in fade-in-delay-2">
+          <div class="eco-item-name">CMFAS Partners</div>
+          <div class="eco-item-type">Exam &amp; Certification</div>
+        </div>
+        <div class="eco-item fade-in fade-in-delay-1">
+          <div class="eco-item-name">AML / CFT / PF Partners</div>
+          <div class="eco-item-type">Financial Crime Compliance</div>
+        </div>
+        <div class="eco-item fade-in fade-in-delay-2">
+          <div class="eco-item-name">Monetary Authority of Singapore</div>
+          <div class="eco-item-type">Regulator</div>
+        </div>
+        <div class="eco-item fade-in fade-in-delay-3">
+          <div class="eco-item-name">Institute of Banking &amp; Finance</div>
+          <div class="eco-item-type">Standards Body</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       FAQ
+  ============================================= -->
+  <section id="faq" aria-labelledby="faq-heading">
+    <div class="container" style="padding-top:90px;padding-bottom:90px;">
+      <div class="section-header">
+        <span class="section-label fade-in">FAQ</span>
+        <h2 class="section-title fade-in fade-in-delay-1" id="faq-heading">Frequently Asked Questions</h2>
+        <p class="section-subtitle fade-in fade-in-delay-2">Straight answers to the questions compliance teams ask us most.</p>
+      </div>
+
+      <div class="faq-list fade-in fade-in-delay-2">
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq-1">
+            What types of financial institutions does Regnify serve?
+            <span class="faq-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer" id="faq-1" role="region">
+            <div class="faq-answer-inner">Regnify is built for MAS-licensed financial institutions that employ or supervise Licensed Representatives — fund management companies, securities firms, insurance companies, and financial advisory firms. If your firm carries regulatory responsibility for representatives under the Financial Advisers Act or Securities and Futures Act, Regnify was built for you.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq-2">
+            What does "Licensed Representative lifecycle management" actually cover?
+            <span class="faq-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer" id="faq-2" role="region">
+            <div class="faq-answer-inner">Everything, from day one to departure. Pre-onboarding covers Form 3A/B/C/D digital workflows, Fit &amp; Proper checks, CMFAS mapping, background screening, and RNF submission. Post-onboarding handles CPD tracking, recertification, breach logging, and activity attestation. Cessation manages the exit process and MAS notifications cleanly. And the Rep Passport gives each representative a portable, auditable career record they carry with them — useful for future employers too.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq-3">
+            How does Regnify integrate with background screening and other third-party vendors?
+            <span class="faq-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer" id="faq-3" role="region">
+            <div class="faq-answer-inner">Regnify is an ecosystem, not just another tool. Background screening partners, L&amp;D providers, CMFAS examination partners, and AML/CFT/PF vendors are all integrated directly into the platform. Your team works through one interface, with automated SLA tracking and report cross-referencing built in. No more vendor portals, no more manual follow-ups, no more piecing results together in a spreadsheet.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq-4">
+            How does the AI work, and who makes the final compliance decisions?
+            <span class="faq-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer" id="faq-4" role="region">
+            <div class="faq-answer-inner">Regnify's AI does the heavy lifting — surfacing CMFAS gaps, extracting form data from documents, flagging new MAS notices, advising on regulatory questions. But it never acts alone. Every AI recommendation is reviewed and approved by a qualified human before it becomes a compliance action. And every AI interaction is logged with full input, output, and model detail — so your audit trail is always complete and inspection-ready.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq-5">
+            How does Regnify handle data privacy and security?
+            <span class="faq-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer" id="faq-5" role="region">
+            <div class="faq-answer-inner">Privacy isn't an afterthought — it's built into how the platform works. PII is automatically redacted before any data is transmitted to an external AI provider. All data storage and processing is designed to meet MAS data governance requirements. Role-based access controls mean only authorised personnel see sensitive representative records, and every access event is logged. Your data is never shared, sold, or used for anything beyond running your platform.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq-6">
+            Is the platform suitable for both large and smaller financial institutions?
+            <span class="faq-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="faq-answer" id="faq-6" role="region">
+            <div class="faq-answer-inner">Yes — the MAS compliance obligations are identical whether you have ten representatives or five hundred. The scale differs; the regulatory requirements don't. Regnify is designed to work for both, and to grow as your representative population grows. Book a free consultation and we'll walk through what the platform looks like for your specific situation — no generic demos, no one-size-fits-all pitches.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       SECTION: ENQUIRY FORM
+  ============================================= -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="container">
+      <div class="contact-inner">
+
+        <div class="fade-in">
+          <span class="section-label">Get in Touch</span>
+          <h2 class="contact-title" id="contact-heading">Request Your<br>Free Consultation</h2>
+          <p class="contact-desc">No sales pitch. No generic demo. You'll speak directly with a compliance practitioner who understands MAS regulations, Licensed Representative obligations, and the real operational pressures your team faces. We'll show you what Regnify can do for your specific situation — and be straight with you about where it fits.</p>
+
+          <div class="contact-point">
+            <div class="contact-point-icon" aria-hidden="true">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="contact-point-text">
+              <strong>30 Minutes, No Fluff</strong>
+              A focused conversation about your actual compliance challenges — not a product walkthrough
+            </div>
+          </div>
+          <div class="contact-point">
+            <div class="contact-point-icon" aria-hidden="true">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="contact-point-text">
+              <strong>Practitioner-Led</strong>
+              You'll speak with someone who has lived the compliance role — not just built software for it
+            </div>
+          </div>
+          <div class="contact-point">
+            <div class="contact-point-icon" aria-hidden="true">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="contact-point-text">
+              <strong>Tailored to Your Firm</strong>
+              We discuss your representative population, your pain points, and what a real solution looks like for you
+            </div>
+          </div>
+        </div>
+
+        <div class="fade-in fade-in-delay-2">
+          <div class="form-card">
+            <h3 class="form-title">Tell us about yourself</h3>
+
+            <div class="form-message" id="formSuccess" role="alert" aria-live="polite">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Thank you! We've received your enquiry and will be in touch within one business day.
+            </div>
+            <div class="form-message" id="formError" role="alert" aria-live="polite">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Something went wrong. Please email us at <a href="mailto:ask@regnify.sg" style="color:inherit;text-decoration:underline;">ask@regnify.sg</a>
+            </div>
+
+            <form id="enquiryForm" action="https://formsubmit.co/ask@regnify.sg" method="POST" novalidate>
+              <input type="hidden" name="_subject" value="New Consultation Enquiry — Regnify">
+              <input type="hidden" name="_captcha" value="false">
+              <input type="hidden" name="_template" value="table">
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="fullName">Full Name <span class="req" aria-hidden="true">*</span></label>
+                  <input class="form-input" type="text" id="fullName" name="Full Name" placeholder="Jane Tan" required autocomplete="name">
+                  <span class="field-error" id="fullName-error" role="alert">Please enter your full name.</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="organisation">Organisation <span class="req" aria-hidden="true">*</span></label>
+                  <input class="form-input" type="text" id="organisation" name="Organisation" placeholder="ABC Capital Pte Ltd" required autocomplete="organization">
+                  <span class="field-error" id="organisation-error" role="alert">Please enter your organisation.</span>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="designation">Designation <span class="req" aria-hidden="true">*</span></label>
+                  <input class="form-input" type="text" id="designation" name="Designation" placeholder="Head of Compliance" required autocomplete="organization-title">
+                  <span class="field-error" id="designation-error" role="alert">Please enter your designation.</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="phone">Phone Number <span class="req" aria-hidden="true">*</span></label>
+                  <input class="form-input" type="tel" id="phone" name="Phone Number" placeholder="+65 9123 4567" required autocomplete="tel">
+                  <span class="field-error" id="phone-error" role="alert">Please enter a valid phone number.</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">Email Address <span class="req" aria-hidden="true">*</span></label>
+                <input class="form-input" type="email" id="email" name="Email Address" placeholder="jane@abccapital.com.sg" required autocomplete="email">
+                <span class="field-error" id="email-error" role="alert">Please enter a valid email address.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="message">What would you like to consult with us on? <span style="color:var(--mid-warm);font-weight:400;text-transform:none;font-size:0.75rem;">(optional)</span></label>
+                <textarea class="form-textarea" id="message" name="Consultation Topic" placeholder="e.g. We have 40 Licensed Representatives and are struggling with CMFAS tracking and CPD compliance…" rows="4"></textarea>
+              </div>
+
+              <button type="submit" class="btn-submit" id="submitBtn">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Get My Free Consultation
+              </button>
+              <p class="form-notice">By submitting, you agree to be contacted by Regnify. We do not share your details with third parties.</p>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       FOOTER
+  ============================================= -->
+  <footer id="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="140" height="42" aria-label="Regnify" role="img">
+            <text x="200" y="68" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="72" font-weight="700" letter-spacing="-3" fill="#F0E8D8">Regnify</text>
+            <rect x="30" y="84" width="326" height="5" rx="2.5" fill="#C8A84B"/>
+            <circle cx="366" cy="86.5" r="3.5" fill="#C8A84B"/>
+            <circle cx="378" cy="86.5" r="2" fill="#C8A84B" opacity="0.5"/>
+          </svg>
+          <p class="footer-desc">We built the platform we always wished existed. Singapore's compliance teams deserve better than spreadsheets and email chains. Regnify is what better looks like.</p>
+          <div class="social-links" aria-label="Social media">
+            <a href="#" class="social-link" aria-label="Regnify on LinkedIn" rel="noopener noreferrer">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="#" class="social-link" aria-label="Regnify on X" rel="noopener noreferrer">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="#problem">The Problem</a></li>
+            <li><a href="#lifecycle">The Platform</a></li>
+            <li><a href="#why">Why Regnify</a></li>
+            <li><a href="#ai">AI Capabilities</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Contact</h4>
+          <div class="footer-contact-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:ask@regnify.sg">ask@regnify.sg</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copyright">© 2025 Regnify Pte. Ltd. All rights reserved.</p>
+        <p class="footer-disclaimer">This website is for informational purposes only and does not constitute financial, legal, or regulatory advice. Please consult a qualified professional before making compliance or investment decisions.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =============================================
+       JAVASCRIPT
+  ============================================= -->
+  <script>
+    /* --- Sticky nav --- */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* --- Mobile menu --- */
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      hamburger.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    /* --- Scroll-triggered fade-in --- */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -36px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    /* --- FAQ accordion --- */
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.faq-question').forEach(b => {
+          b.setAttribute('aria-expanded', 'false');
+          document.getElementById(b.getAttribute('aria-controls')).classList.remove('open');
+        });
+        if (!expanded) {
+          btn.setAttribute('aria-expanded', 'true');
+          document.getElementById(btn.getAttribute('aria-controls')).classList.add('open');
+        }
+      });
+    });
+
+    /* --- Form validation & submission --- */
+    const form      = document.getElementById('enquiryForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const msgOk     = document.getElementById('formSuccess');
+    const msgErr    = document.getElementById('formError');
+
+    function showErr(id, show) {
+      document.getElementById(id).classList.toggle('error', show);
+      document.getElementById(id + '-error').classList.toggle('show', show);
+    }
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRx = /^[\d\s\+\-\(\)]{7,20}$/;
+
+    function validate() {
+      let ok = true;
+      const checks = [
+        ['fullName',     v => v.length >= 2,      ],
+        ['organisation', v => v.length >= 2,      ],
+        ['designation',  v => v.length >= 2,      ],
+        ['email',        v => emailRx.test(v),    ],
+        ['phone',        v => phoneRx.test(v),    ],
+      ];
+      checks.forEach(([id, test]) => {
+        const pass = test(document.getElementById(id).value.trim());
+        showErr(id, !pass);
+        if (!pass) ok = false;
+      });
+      return ok;
+    }
+
+    ['fullName','organisation','designation'].forEach(id => {
+      document.getElementById(id).addEventListener('blur', function() { showErr(id, this.value.trim().length < 2); });
+    });
+    document.getElementById('email').addEventListener('blur', function() { showErr('email', !emailRx.test(this.value.trim())); });
+    document.getElementById('phone').addEventListener('blur', function() { showErr('phone', !phoneRx.test(this.value.trim())); });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msgOk.style.display = msgErr.style.display = 'none';
+      if (!validate()) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        if (res.ok || res.redirected) {
+          msgOk.style.display = 'flex';
+          form.reset();
+          document.querySelectorAll('.form-input,.form-textarea').forEach(el => el.classList.remove('error'));
+          document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
+          msgOk.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else { throw new Error(); }
+      } catch {
+        msgErr.style.display = 'flex';
+        msgErr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Get My Free Consultation';
+      }
+    });
+  </script>
+
+</body>
+</html>
