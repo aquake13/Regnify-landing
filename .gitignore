@@ -1,0 +1,7 @@
+# Local Claude Code tooling config (machine-specific)
+.claude/launch.json
+
+# Source/design documents — kept local, not version-controlled (bloat git history)
+*.docx
+*.pdf
+*.pptx
