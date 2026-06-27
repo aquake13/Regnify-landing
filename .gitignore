@@ -5,3 +5,6 @@
 *.docx
 *.pdf
 *.pptx
+
+# Local assets folder — kept local only
+assets/
