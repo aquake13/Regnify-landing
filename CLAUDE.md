@@ -14,6 +14,20 @@ npx serve -p 3000 .
 
 Then open `http://localhost:3000`. The `.claude/launch.json` is pre-configured for this — use `preview_start` with name `"Regnify Landing Page"`.
 
+## Deployment
+
+- **GitHub repo**: `https://github.com/aquake13/Regnify-landing`
+- **Live site**: `https://aquake13.github.io/Regnify-landing/`
+- Pushing to `main` triggers `.github/workflows/deploy.yml`, which deploys automatically to GitHub Pages via `actions/deploy-pages`.
+- Use `/updategit` (project slash command) to run the full publish workflow: secrets scan → security scan → README update → commit/push → repo About update → deployment confirmation.
+
+## Git hygiene
+
+- `assets/` is in `.gitignore` — kept local only, never commit it.
+- `.claude/settings.local.json` and `.claude/launch.json` are also excluded.
+- Binary/source files (`*.pdf`, `*.docx`, `*.pptx`) are excluded to avoid bloating git history.
+- Always run a secrets scan before pushing (the `/updategit` command does this automatically).
+
 ## Architecture
 
 Everything is in `index.html`:
@@ -43,5 +57,7 @@ The enquiry form submits to `https://formsubmit.co/ask@regnify.sg`. Validation i
 
 - Terminology: **Licensed Representatives** (Singapore/MAS), not "Appointed Representatives" (UK/FCA).
 - Regulatory context: MAS, CMFAS, RNF, CPD, Form 3A/B/C/D, Financial Advisers Act, Securities and Futures Act.
-- AI section intentionally describes capabilities at a high level (4 pillars) — do not restore granular feature listings to avoid competitor IP exposure.
+- AI section intentionally describes capabilities at **4 high-level pillars only** — do not restore granular feature listings to avoid competitor IP exposure.
+- Lifecycle stages show **2–3 bullets per column** — do not expand back to granular per-feature lists.
 - Phone number intentionally omitted from footer — email only (`ask@regnify.sg`).
+- Contact section: no phone number anywhere on the page.
